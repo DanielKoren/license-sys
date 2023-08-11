@@ -138,6 +138,8 @@ class Database {
             die('failed to execute an sql statement, ' . $this->get_error());
         }
 
+        // todo; check for some error code before returning
+
         $result = mysqli_stmt_get_result($stmt);
 
         // close the statement

@@ -19,7 +19,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['id'])) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?php echo $site_title;?></title>
+    <title><?php echo SITE_TITLE; ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -39,16 +39,16 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['id'])) {
 
         // sub status
         $current_date = date('Y-m-d H:i:s');
-        $expiration_date = $account['expiration_date'];
-        if ($expiration_date > $current_date) {
+        $expired_date = $account['expired_date'];
+        if ($expired_date > $current_date) {
             echo '<p><b>Subscription status:</b> <span style="color:green;">ACTIVE</span></p>'; 
         } else {
             echo '<p><b>Subscription status:</b> <span style="color:red;">INACTIVE</span></p>';
         }
 
         // sub expiration date
-        echo '<p><b>Expires on:</b> ' . $account['expiration_date'] . '</p>';
-        if ($expiration_date < $current_date) {
+        echo '<p><b>Expires on:</b> ' . $account['expired_date'] . '</p>';
+        if ($expired_date < $current_date) {
             echo '<a href="buy.php">Buy subscription</a><br>';
         } else {
             echo '<a href="client.php">Download client</a><br>';

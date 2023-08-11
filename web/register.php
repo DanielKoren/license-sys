@@ -33,15 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // create account if no errors found
     if (count($errors) == 0) {
-        $added_date = date('Y-m-d H:i:s');
-        $expiration_date = '0000-00-00 00:00:00';
+        $created_date = date('Y-m-d H:i:s');
+        $expired_date = '0000-00-00 00:00:00';
         //$expiration_date = '1970-1-1 12:00:00';
         $ip_address = $_SERVER["REMOTE_ADDR"];
         $hwid_token = '-';
         $banned = 0;
         $admin = 0;
         
-        $result = $db->prepare_query("INSERT INTO `accounts` (`username`, `password`, `email`, `added_date`, `expiration_date`, `ip`, `hwid`, `banned`, `admin`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", $username, $password, $email, $added_date, $expiration_date, $ip_address, $hwid_token, $banned, $admin);
+        $db->prepare_query("INSERT INTO `accounts` (`username`, `password`, `email`, `created_date`, `expired_date`, `ip`, `hwid`, `banned`, `admin`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", $username, $password, $email, $created_date, $expired_date, $ip_address, $hwid_token, $banned, $admin);
         $account_created = true;
     }
 }
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?php echo $site_title;?></title>
+    <title><?php echo SITE_TITLE; ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
