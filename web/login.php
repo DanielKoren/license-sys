@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header('Location: dashboard.php');
                 exit();
             }
+        } else {
+            $status = "Invalid username or password.";
         }
     } else {
         $status = "Invalid username or password.";
@@ -50,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <br>
             <input type="password" placeholder="Password" name="password" id="password" required>
             <br>
-            <p style="color: red;text-align: center;"><?php echo $status; ?></p>
+            <p><a href="forgot-password.php">I forgot my password</a></p>
+            <br>
+            <p style="color: red;text-align: center;width:100%"><?php echo $status; ?></p>
             <input type="submit" value="Login">
         </form>
     </div>
