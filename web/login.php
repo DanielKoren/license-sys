@@ -12,18 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $db->safe_post("username");
     $password = $db->safe_post("password");
 
-    $result = $db->prepare_query("SELECT * FROM accounts WHERE username=? AND password=?", $username, $password);
+    $result = $db->prepare_query("SELECT * FROM accounts WHERE username=?", $username);
     
     if ($db->num_rows($result) > 0) {
         $account = $db->fetch_assoc($result);
         
-        if ($account['banned']) {
-            $status = "Account is banned.";
-        } else {
-            $_SESSION['username'] = $username;
-            $_SESSION['id'] = $account['id'];
-            header('Location: dashboard.php');
-            exit();
+        if (password_verify($password, $account['password'])) {
+            if ($account['banned']) {
+                $status = "Account is banned.";
+            } else {
+                $_SESSION['username'] = $username;
+                $_SESSION['id'] = $account['id'];
+                header('Location: dashboard.php');
+                exit();
+            }
         }
     } else {
         $status = "Invalid username or password.";

@@ -40,8 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $hwid_token = '-';
         $banned = 0;
         $admin = 0;
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        $db->prepare_query("INSERT INTO `accounts` (`username`, `password`, `email`, `created_date`, `expired_date`, `ip`, `hwid`, `banned`, `admin`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", $username, $password, $email, $created_date, $expired_date, $ip_address, $hwid_token, $banned, $admin);
+        $db->prepare_query("INSERT INTO `accounts` (`username`, `password`, `email`, `created_date`, `expired_date`, `ip`, `hwid`, `banned`, `admin`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", $username, $hashed_password, $email, $created_date, $expired_date, $ip_address, $hwid_token, $banned, $admin);
         $account_created = true;
     }
 }
