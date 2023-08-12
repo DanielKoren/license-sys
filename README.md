@@ -32,6 +32,9 @@ login.php - Login page
 logout.php - Self explainatory, destroys user's login session
 dashboard.php - Main page for logged in users 
 
+forgot-password.php - generates a token with an expiration date and sends it to the specified email
+reset-password.php - handles the password reset process by verifying the token's validity and expiration, then updating the account's password in the db
+
 buy.php - Purhcase subscription page
 paypal-cancel.php  - redirected if payment is canceled
 paypal-success.php - redirected is payment is successful
@@ -67,6 +70,16 @@ CREATE TABLE `payments` (
     `date` timestamp NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tokens` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `email` varchar(100) NOT NULL,
+    `token` varchar(100) NOT NULL,
+    `expiration` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY(`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
 ```
 
 ### 0x2) client files
