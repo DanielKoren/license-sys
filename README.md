@@ -13,18 +13,20 @@ once the user logged in successfully via the app it will download the intended s
 
 this system consists of 2 seperate projects:
 
-* **web** - website panel (written in PHP and MySQL) allows users to create an account and pay for subscription (maybe add an admin panel to manage accounts table)
+* **web** - website panel (written in PHP and MySQL) allows users to create an account and pay for subscription
 
 * **client** - gui app (written in C++) that allows to login and download and run the protected software. 
 
 ### 0x1) web files
 
 ```
-/css/        - Contains all css files
-/images/     - Contains all images
+/css/        - Contains css files
+/images/     - Contains images
+/files/      - Contains exe files
+ * has .htaccess file with Deny from all to block all web access to that directory and its contents 
 
 config.php - Contains global variables
-database.class.php - PHP class that allows easier interaction with MySQLi db.
+database.class.php - PHP class wrapper around MySQLi procedural functions.
 
 index.php - Homepage
 register.php - Register page
@@ -39,7 +41,9 @@ buy.php - Purhcase subscription page
 paypal-cancel.php  - redirected if payment is canceled
 paypal-success.php - redirected is payment is successful
 paypal-payment.php - our IPN (Instant Payment Notification) 
-    * The idea is when a transaction will occur PayPal will send a post request to our IPN which will be responsible to validate PayPal's transaction before we update our DB.
+    * The idea is when a transaction will occur PayPal will send a post request to our IPN which is responsible to validate PayPal's transaction before we update our DB.
+
+auth.php - this page handles user authentication request which is sent by the client app (verifying username, password & hwid) and returning JSON response.
 
 ```
 
@@ -78,8 +82,40 @@ CREATE TABLE `tokens` (
     `expiration` timestamp NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
 ```
 
 ### 0x2) client files
+
+```
+main.cpp - main function
+
+window.cpp - class wrapper for creating and managing windows GUI
+http.cpp - class wrapper around WinINET lib
+utils.cpp - 
+json.cpp - json lib for cpp 11 ( https://github.com/dropbox/json11 )
+base64.cpp - base64 encoding and decoding ( https://github.com/ReneNyffenegger/cpp-base64 )
+```
+
+Using win32 api for GUI rendering, inside ```main.cpp``` resides the function  ```window_procedure()```  which is a callback used for handling Windows messages. it also handles requests to ```auth.php```.
+
+auth.php script will handle POST request with the following data which is sent by the client
+* username
+* password
+* hwid
+
+and send a JSON format response back to the client.
+
+example -
+```JSON
+{
+  "username": "root",
+  "success": false,
+  "error_msg": "Subscription is expired",
+  "data": "" 
+}
+```
+
+the ```success``` key is a boolean used to indicate whether authentication was successful or not, 
+if the ```success``` key is true then ```data``` key will contain our executable file encoded in a base64 format (this is to ensure that the data can be transmitted without corruption)
+
+the client will decode the base64 string to BYTE array and run the file dynamically.

@@ -14,19 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password2 = $db->safe_post("password2");
     $email = $db->safe_post("email");
     
-    // check if username valid
+    // check if username exist
     $result = $db->prepare_query("SELECT * FROM accounts WHERE username=?", $username);
     if ($db->num_rows($result) > 0) {
         array_push($errors, "Username is taken");
     }
 
-    // check if email valid
+    // check if email exist
     $result = $db->prepare_query("SELECT * FROM accounts WHERE email=?", $email);
     if ($db->num_rows($result) > 0) {
         array_push($errors, "Email is taken");
     }
 
-    // check if password matches
+    // check if both passwords match
     if ($password != $password2) {
         array_push($errors, "Password doesn't match");
     }
