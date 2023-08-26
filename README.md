@@ -94,6 +94,7 @@ http.cpp - class wrapper around WinINET lib
 utils.cpp - 
 json.cpp - json lib for cpp 11 ( https://github.com/dropbox/json11 )
 base64.cpp - base64 encoding and decoding ( https://github.com/ReneNyffenegger/cpp-base64 )
+config.cpp - load & save config file that holds username and password (remember me option)
 ```
 
 Using win32 api for GUI rendering, inside ```main.cpp``` resides the function  ```window_procedure()```  which is a callback used for handling Windows messages. it also handles requests to ```auth.php```.

@@ -10,6 +10,8 @@ $success = false;
 $error = "";
 $data = "";
 
+$file_path = "files/putty.exe";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $db->safe_post("username");
     $pass = $db->safe_post("password");
@@ -33,19 +35,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($expired_date > $current_date) {
                     // Check if HWID was generated previously
                     if ($account['hwid'] == '-') {
+                        // Update new HWID
                         $db->prepare_query("UPDATE accounts SET hwid=? WHERE username=?", $hwid, $user);
-                        $success = true;
-                        // read our file data 
-                        $data = file_get_contents("files/putty.exe");
-                        // encode our file data to base64 to ensure that it can be transmitted as text in a JSON response
-                        $data = base64_encode($data);
+                        // Read exe data 
+                        if (!is_readable($file_path)) {
+                            $error = "File doesn't exists or unreadable";
+                        } else {
+                            $success = true;
+                            $data = file_get_contents($file_path);
+                            $data = base64_encode($data);
+                        }
                     } else {
                         if ($account['hwid'] == $hwid) {
-                            $success = true;
-                            // read our file data 
-                            $data = file_get_contents("files/putty.exe");
-                            // encode our file data to base64 to ensure that it can be transmitted as text in a JSON response
-                            $data = base64_encode($data);
+                            // Read exe data 
+                            if (!is_readable($file_path)) {
+                                $error = "File doesn't exists or unreadable";                            }
+                            else {
+                                $success = true;
+                                $data = file_get_contents($file_path);
+                                $data = base64_encode($data);
+                            }
                         } else {
                             // Ban account if HWID doesn't match to the previous one
                             $db->prepare_query("UPDATE accounts SET banned=? WHERE username=?", 1, $user);

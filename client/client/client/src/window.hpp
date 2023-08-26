@@ -3,6 +3,10 @@
 #include <windows.h>
 #include <string>
 
+/* idm stands for identifier menu */
+#define IDM_LOGIN   		0x1
+#define IDM_REMEMBER_ME     0x2
+
 class window
 {
 public:
@@ -20,6 +24,7 @@ public:
 	static HWND m_hwnd_username;
 	static HWND m_hwnd_password;
 	static HWND m_hwnd_button;
+	static HWND m_hwnd_rememberme;
 
 private:
 	std::string m_error;

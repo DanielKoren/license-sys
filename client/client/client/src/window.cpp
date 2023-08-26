@@ -6,6 +6,7 @@ HINSTANCE window::m_instance;
 HWND window::m_hwnd_username;
 HWND window::m_hwnd_password;
 HWND window::m_hwnd_button;
+HWND window::m_hwnd_rememberme;
 
 std::string random_string(std::size_t length)
 {

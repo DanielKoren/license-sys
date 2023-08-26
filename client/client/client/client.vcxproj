@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\base64.cpp" />
+    <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\http.cpp" />
     <ClCompile Include="src\json.cpp" />
     <ClCompile Include="src\utils.cpp" />
@@ -140,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base64.hpp" />
+    <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\http.hpp" />
     <ClInclude Include="src\json.hpp" />
     <ClInclude Include="src\utils.hpp" />

@@ -5,6 +5,7 @@
 #include "src/http.hpp"
 #include "src/json.hpp"
 #include "src/base64.hpp"
+#include "src/config.hpp"
 
 std::string get_hwid_token()
 {
@@ -35,15 +36,63 @@ LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
         window::m_hwnd_password = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD, 160, 80, 150, 20, hwnd, NULL, window::m_instance, NULL);
 
         // login button
-        window::m_hwnd_button = CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 160, 120, 80, 30, hwnd, (HMENU)1, window::m_instance, NULL);
+        window::m_hwnd_button = CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 230, 120, 80, 30, hwnd, (HMENU)IDM_LOGIN, window::m_instance, NULL);
+
+        // remember me checkbox
+        window::m_hwnd_rememberme = CreateWindow("BUTTON", "Remember Me", WS_VISIBLE | WS_CHILD | BS_CHECKBOX, 50, 120, 120, 30, hwnd, (HMENU)IDM_REMEMBER_ME, window::m_instance, NULL);
+
+        // check if config file exist & and load data
+        if (config::load())
+        {
+            config::remember_me = true;
+            CheckDlgButton(hwnd, IDM_REMEMBER_ME, BST_CHECKED);
+
+            SetWindowText(window::m_hwnd_username, config::username.c_str());
+            SetWindowText(window::m_hwnd_password, config::password.c_str());
+        }
+        
         break;
     }
     case WM_COMMAND: {
-        if (HIWORD(wparam) == BN_CLICKED && LOWORD(wparam) == 1) 
+        // remember me
+        if (HIWORD(wparam) == BN_CLICKED && LOWORD(wparam) == IDM_REMEMBER_ME) 
+        {
+            if (IsDlgButtonChecked(hwnd, IDM_REMEMBER_ME))
+            {
+                config::remember_me = false;
+                CheckDlgButton(hwnd, IDM_REMEMBER_ME, BST_UNCHECKED);
+            } 
+            else 
+            {
+                config::remember_me = true;
+                CheckDlgButton(hwnd, IDM_REMEMBER_ME, BST_CHECKED);
+            }
+        }
+
+        // login button
+        if (HIWORD(wparam) == BN_CLICKED && LOWORD(wparam) == IDM_LOGIN) 
         {
             char username[100], password[100];
+
             GetWindowText(window::m_hwnd_username, username, 100);
+            if (strlen(username) == 0)
+            {
+                MessageBox(hwnd, "Empty username.", "Error", MB_ICONERROR | MB_OK);
+                return 0;
+            }
+
             GetWindowText(window::m_hwnd_password, password, 100);
+            if (strlen(password) == 0) 
+            {
+                MessageBox(hwnd, "Empty password.", "Error", MB_ICONERROR | MB_OK);
+                return 0;
+            }
+
+            // Save config file or remove fie
+            if (config::remember_me)
+                config::save(username, password);
+            else 
+                config::remove();
 
             // Generate HWID token
             const auto hwid = get_hwid_token();
@@ -69,15 +118,18 @@ LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
                 //MessageBox(hwnd, response.c_str(), "INFO", MB_ICONINFORMATION | MB_OK);
                 
                 const auto size = response.size();
-                if (response.size() > 0) {
+                if (response.size() > 0) 
+                {
                     using namespace json11;
                     std::string err;
                     const auto json = Json::parse(response, err);
                     // show error msg if json parsing has failed 
-                    if (!err.empty()) {
+                    if (!err.empty()) 
+                    {
                         MessageBox(hwnd, err.c_str(), "Parsing Error", MB_ICONERROR | MB_OK);
                     }
-                    else {
+                    else 
+                    {
                         //MessageBox(hwnd, json.dump().c_str(), "JSON response", MB_ICONINFORMATION | MB_OK);
 
                         // check success key in the JSON response
@@ -128,7 +180,7 @@ void error_msg(const char* message)
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previnstance, LPSTR cmdline, int cmdshow)
 {
-    auto wnd = window(instance, 400, 250);
+    auto wnd = window(instance, 375, 240);
     if (!wnd.create_window(window_procedure))
     {
         error_msg(wnd.get_error().c_str());
