@@ -33,6 +33,7 @@ register.php - Register page
 login.php - Login page
 logout.php - Self explainatory, destroys user's login session
 dashboard.php - Main page for logged in users 
+client.php - Downloads client app if the subscription is active
 
 forgot-password.php - generates a token with an expiration date and sends it to the specified email
 reset-password.php - handles the password reset process by verifying the token's validity and expiration, then updating the account's password in the db
@@ -83,6 +84,8 @@ CREATE TABLE `tokens` (
     PRIMARY KEY(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
+
+* check global variables in config.php
 
 ### 0x2) client files
 

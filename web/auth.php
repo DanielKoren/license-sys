@@ -49,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         if ($account['hwid'] == $hwid) {
                             // Read exe data 
                             if (!is_readable($file_path)) {
-                                $error = "File doesn't exists or unreadable";                            }
-                            else {
+                                $error = "File doesn't exists or unreadable";
+                            } else {
                                 $success = true;
                                 $data = file_get_contents($file_path);
                                 $data = base64_encode($data);
